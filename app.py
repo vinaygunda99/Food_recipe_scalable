@@ -8,6 +8,7 @@ app = Flask(__name__)
 app.config["SESSION_TYPE"]="filesystem"
 Session(app)
 app.config['UPLOAD_FOLDER'] = 'UPLOAD_FOLDER'
+app=application
 
 @app.route("/",methods=["GET","POST"])
 def login():
