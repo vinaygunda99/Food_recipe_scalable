@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recipe Explorer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f7f7f7;
+            text-align: center;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        h1 {
+            font-size: 2em;
+            margin-bottom: 10px;
+            animation: fadeIn 1.5s;
+        }
+
+        .recipe-selector {
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            font-size: 16px;
+            width: 200px;
+        }
+
+        button {
+            background-color: #ff6b6b;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            background-color: #ff3b3b;
+        }
+
+        .recipe-card {
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 10px;
+            background-color: #fff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            animation: slideUp 0.5s ease-in-out;
+        }
+
+        img.recipe-image {
+            max-width: 100%;
+            border-radius: 8px;
+            margin-top: 10px;
+            animation: fadeIn 1s;
+        }
+
+        ul, ol {
+            text-align: left;
+            margin-left: 20px;
+        }
+
+        li {
+            font-size: 16px;
+            margin: 5px 0;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        .navbar {
+            background: #ff6b6b;
+            padding: 15px 50px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        .nav-links {
+            list-style: none;
+            display: flex;
+        }
+
+        .nav-links li {
+            margin-left: 20px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: white;
+            font-weight: bold;
+            transition: 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            text-decoration: underline;
+        }
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            position: relative;
+            transition: transform 0.3s ease;
+        }
+        
+        .logo:hover {
+            transform: scale(1.05);
+        }
+        
+        .logo::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: white;
+            transition: width 0.3s ease;
+        }
+        
+        .logo:hover::after {
+            width: 100%;
+        }
+        
+
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="logo">Culinary Haven</div>
+        <ul class="nav-links">
+            <li><a href="/logout">Logout</a></li>
+        </ul>
+    </nav>
+
+    <h1>Explore Our Recipes</h1>
+    <p>Discover delicious recipes from around the world</p>
+
+    <div class="container">
+        <h2>Find Your Perfect Recipe</h2>
+        <form id="recipe-form" action="/recipe" method="post">
+            <label for="recipe-select">Select a Recipe:</label>
+            <select id="recipe-select" class="recipe-selector" name="recipe_name" required>
+                <option value=1>Pasta Carbonara</option>
+                <option value=2>Fluffy Pancakes</option>
+                <option value=5>Caesar Salad</option>
+            </select>
+            <button type="submit">Show Recipe</button>
+        </form>
+    </div>
+
+    {% if res %}
+    <form action="/translator" method="post">
+    <div id="recipe-display" class="container " >
+       {% for i in res %}
+        <img style='width: 24%;' src='{{i[4]}}' alt="img." >
+        <input type="hidden" id="r_image" name="r_image" value="{{i [4]}}">
+       <div><b>Recipe name:</b></div>
+       <div>{{i[1]}}</div><br><br>
+       <input type="hidden" id="r_name" name="r_name" value="{{i[1]}}">
+       <div><b>Ingredients:</b></div>
+       <div>{{i[3]}}</div><br><br>
+       <input type="hidden" id="r_ing" name="r_ing" value="{{i[3]}}">
+       <div><b>Procedure:</b></div>
+       <div>{{i[2]}}</div>
+       <input type="hidden" id="r_pro" name="r_pro" value="{{i[2]}}">
+       {% endfor %}
+       <button type="submit">Translate</button>
+    </div>
+</form>
+       {% endif%}
+
+       <!-- #########translation section########## -->
+       {% if trans_name %}
+       <div id="recipe-display" class="container " >
+           <form action="/text_to_speech" method="post">
+           {% for i in res%}
+           <input type="hidden" id="r_img" name="r_image" value="{{i[4]}}">
+           <input type="hidden" id="r_name" name="r_name" value="{{i[1]}}">
+           <input type="hidden" id="r_ing" name="r_ing" value="{{i[3]}}">
+           <input type="hidden" id="r_pro" name="r_pro" value="{{i[2]}}">
+           {% endfor %}
+          <div><b>Recipe name:</b></div>
+          <div>{{trans_name}}</div><br><br>
+          <input type="hidden" id="trans_name" name="trans_name" value="{{trans_name}}">
+          <div><b>Ingredients:</b></div>
+          <div>{{trans_ing}}</div><br><br>
+          <input type="hidden" id="trans_ing" name="trans_ing" value="{{trans_ing}}">
+          <div><b>Procedure:</b></div>
+          <div>{{trans_pro}}</div>
+          <input type="hidden" id="trans_pro" name="trans_pro" value="{{trans_pro}}">
+    
+          <button type="submit">Speech</button>
+        </form>
+          {% endif%}
+          {% if download_url %}
+          <div><a class="download-link" href="{{ download_url }}" download>Download Audio</a></div>
+          {% endif %}
+       </div>
+
+
+
+
+</body>
+</html>
